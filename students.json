@@ -1,0 +1,13 @@
+{
+    "Stanley Ekwere": {
+        "name": "Stanley Ekwere",
+        "marks": {
+            "Mathematics": 98.0,
+            "English": 100.0,
+            "Physics": 98.0,
+            "Chemistry": 99.0
+        },
+        "average": 98.75,
+        "grade": "A"
+    }
+}

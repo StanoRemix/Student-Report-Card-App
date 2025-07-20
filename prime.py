@@ -4,13 +4,25 @@ from student import Student
 
 STORAGE = 'students.json'
 def load_records():
-    if os.path.exists(STORAGE):
-        with open(STORAGE, 'r') as file:
-            return json.load(file)
-    return {}
+    try:
+        if os.path.exists(STORAGE):
+            with open(STORAGE, 'r') as file:
+                return json.load(file)
+        return {}
+    except json.JSONDecodeError:
+        print("\nError reading the student records. The file may be corrupted.")
+        return {}
+    except Exception as e:
+        print(f"\nAn error occurred while loading records: {e}")
+        return {}
 def save_records(students):
-    with open(STORAGE, 'w') as file:
-        json.dump(students, file, indent=4)
+    try:
+        with open(STORAGE, 'w') as file:
+            json.dump(students, file, indent=4)
+    except Exception as e:
+        print(f"\nAn error occurred while saving records: {e}")
+        return False
+    return True
 def add_student():
     name = input("\nEnter student's name: ")
     subjects = {}
@@ -29,19 +41,31 @@ def add_student():
     save_records(students)
     print(f"Student {name} added successfully.")
 def view_students():
-    students = load_records()
-    if not students:
-        print("\nNo students found.")
+    try:
+        students = load_records()
+        if not students:
+            print("\nNo students found.")
+            return
+        for i, name in enumerate(students, start=1):
+            print("-" * 40)
+            print(f"{i}. Name: {name}")
+            print(f"Marks:")
+            for subject, mark in students[name]['marks'].items():
+                print(f"  {subject}: {mark}")
+            print(f"Average: {students[name]['average']}; Grade: {students[name]['grade']}")
+            print("-" * 40)
+    except Exception as e:
+        print(f"\nError displaying records: {e}")
         return
-    for name, record in students.items():
-        print("-" * 40)
-        print(f"Name: {name}, Marks: {record['marks']}, Average: {record['average']:.2f}, Grade: {record['grade']}")
 def main():
     while True:
-        print("\nStudent Report Card System")
+        print("\n======== Student Records ========")
+        print("-" * 40)
         print("1. Add Student")
         print("2. View Students")
         print("3. Exit")
+        print("-" * 40)
+
         in_req = int(input("Enter your choice: "))
         if in_req == 1:
             add_student()
